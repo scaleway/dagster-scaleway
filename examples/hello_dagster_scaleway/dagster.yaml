@@ -1,0 +1,16 @@
+storage:
+  postgres:
+    postgres_url:
+      # Can be obtained from the Scaleway Console
+      env: PG_DB_CONN_STRING
+
+run_launcher:
+  module: dagster_scaleway
+  class: ScalewayServerlessJobRunLauncher
+  config:
+    docker_image: rg.fr-par.scw.cloud/test-dagster/hello-dagster-scaleway:0.9
+    env_vars:
+      - PG_DB_CONN_STRING
+      - SCW_ACCESS_KEY # Used to connect to the S3 bucket
+      - SCW_SECRET_KEY # Used to connect to the S3 bucket
+      - S3_BUCKET_NAME
