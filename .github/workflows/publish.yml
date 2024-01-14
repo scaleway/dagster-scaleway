@@ -26,7 +26,7 @@ jobs:
       - name: Set up Poetry
         uses: ./.github/actions/setup-poetry
         with:
-          groups: "" # will only install the main group
+          groups: main
           python-version: "3.11"
 
       - name: Update version (kept at 0.0.0) in pyproject.toml and build
