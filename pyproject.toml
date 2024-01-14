@@ -1,17 +1,19 @@
 [tool.poetry]
 name = "dagster-scaleway"
-version = "0.1.0"
+# Version will be updated by CI
+version = "0.0.0"
 description = ""
 authors = ["Andy Méry <amery@scaleway.com>"]
 readme = "README.md"
-packages = [{ include = "dagster_scaleway"}]
+license = "Apache-2.0"
+packages = [{ include = "dagster_scaleway" }]
 
 [tool.poetry.scripts]
 dagster-scaleway = "dagster_scaleway.cli:main"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-scaleway = { git = "https://github.com/scaleway/scaleway-sdk-python", subdirectory = "scaleway" }
+python = "^3.11"
+scaleway = "^1.4.1"
 dagster = "^1.6.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -22,8 +24,8 @@ ruff = "^0.1.6"
 
 [tool.poetry.group.examples.dependencies]
 pandas = "^1.5.2"
-dagster-postgres = "^0.21.9"
-dagster-aws = "^0.21.9"
+dagster-postgres = "^0.22"
+dagster-aws = "^0.22"
 
 [build-system]
 requires = ["poetry-core"]

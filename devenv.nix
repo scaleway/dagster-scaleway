@@ -17,10 +17,9 @@
 
   # https://devenv.sh/languages/
   languages.python.enable = true;
-  languages.python.version = "3.12";
+  languages.python.version = "3.11";
   languages.python.poetry.enable = true;
-  languages.python.poetry.activate.enable = true;
-
+  
   languages.terraform.enable = true;
 
   # https://devenv.sh/pre-commit-hooks/

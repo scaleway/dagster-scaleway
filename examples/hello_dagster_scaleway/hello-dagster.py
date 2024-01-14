@@ -4,7 +4,7 @@ import os
 
 from dagster_aws.s3 import S3PickleIOManager, S3Resource
 
-from dagster import Definitions, FilesystemIOManager, asset, MetadataValue, Output
+from dagster import Definitions, asset, MetadataValue, Output
 import scaleway
 
 client = scaleway.Client.from_config_file_and_env()
