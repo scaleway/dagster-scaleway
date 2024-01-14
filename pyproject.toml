@@ -1,10 +1,12 @@
 [tool.poetry]
 name = "dagster-scaleway"
-version = "0.1.0"
+# Version will be updated by CI
+version = "0.0.0"
 description = ""
 authors = ["Andy Méry <amery@scaleway.com>"]
 readme = "README.md"
-packages = [{ include = "dagster_scaleway"}]
+license = "Apache-2.0"
+packages = [{ include = "dagster_scaleway" }]
 
 [tool.poetry.scripts]
 dagster-scaleway = "dagster_scaleway.cli:main"
