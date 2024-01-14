@@ -20,5 +20,5 @@ output "rdb_password" {
 
 output "dagster_webserver_url" {
   description = "The URL of the Dagster webserver."
-  value       = "https://${scaleway_serverless_container.webserver.domain_name}"
+  value       = "https://${scaleway_container.webserver.domain_name}"
 }
