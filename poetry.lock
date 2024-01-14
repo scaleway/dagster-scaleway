@@ -1906,22 +1906,17 @@ crt = ["botocore[crt] (>=1.33.2,<2.0a.0)"]
 
 [[package]]
 name = "scaleway"
-version = "1.0.0"
+version = "1.4.1"
 description = "Scaleway SDK for Python"
 optional = false
-python-versions = "^3.8"
-files = []
-develop = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "scaleway-1.4.1-py3-none-any.whl", hash = "sha256:0533ce6a50a689fd5cdddb049697df43800bb9c70504813c80a88fb33869afd9"},
+    {file = "scaleway-1.4.1.tar.gz", hash = "sha256:485a47e0a48748a6546acbe06f25c11ac6ab001bb44cddd503ff76678495ac0e"},
+]
 
 [package.dependencies]
-scaleway-core = "^1"
-
-[package.source]
-type = "git"
-url = "https://github.com/scaleway/scaleway-sdk-python"
-reference = "HEAD"
-resolved_reference = "07111c0a851e08c5fe0b6e249d4f365346f93042"
-subdirectory = "scaleway"
+scaleway-core = "1.4.1"
 
 [[package]]
 name = "scaleway-core"
@@ -2691,5 +2686,5 @@ multidict = ">=4.0"
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.12"
-content-hash = "d1bd4f0cab276d0d9f7c0e8822abbb762abcb8b39703fcd36b219db3183917c3"
+python-versions = "^3.11"
+content-hash = "df8aed856145842e27691bba9a7f96dbde05d2f276c71d766843e8f4649dec9c"

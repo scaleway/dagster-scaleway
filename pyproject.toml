@@ -13,7 +13,7 @@ dagster-scaleway = "dagster_scaleway.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-scaleway = { git = "https://github.com/scaleway/scaleway-sdk-python", subdirectory = "scaleway" }
+scaleway = "^1.4.1"
 dagster = "^1.6.0"
 
 [tool.poetry.group.dev.dependencies]
