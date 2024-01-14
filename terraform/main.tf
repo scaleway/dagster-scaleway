@@ -6,6 +6,28 @@ locals {
 # IAM
 ################################################################################
 
+## Ephemerally create an API key to push the Dagster image to the registry
+
+resource "scaleway_iam_application" "registry_push" {
+  name = "${local.name}-registry-push"
+}
+
+resource "scaleway_iam_policy" "registry_full_access" {
+  name           = "${local.name}-registry-full-access"
+  description    = "Give full access to container registry."
+  application_id = scaleway_iam_application.registry_push.id
+  rule {
+    permission_set_names = ["ContainerRegistryFullAccess"]
+  }
+}
+
+resource "scaleway_iam_api_key" "registry_push" {
+  application_id = scaleway_iam_application.registry_push.id
+  description    = "Ephemeral API key to push to registry."
+
+  expires_at = timeadd(timestamp(), "1h")
+}
+
 ################################################################################
 # RDB
 ################################################################################
@@ -17,7 +39,7 @@ resource "random_password" "rdb_admin_password" {
   special = true
 }
 
-resource "random_password" "rdb_admin_password" {
+resource "random_password" "rdb_password" {
   count = var.rdb_username == "" ? 1 : 0
 
   length  = 30
@@ -25,8 +47,8 @@ resource "random_password" "rdb_admin_password" {
 }
 
 locals {
-  rdb_admin_password = var.rdb_admin_password != "" ? var.rdb_admin_password : random_password.rdb_admin_password.result
-  db_password        = var.rdb_username != "" ? var.rdb_password : random_password.db_password.result
+  rdb_admin_password = var.rdb_admin_password != "" ? var.rdb_admin_password : random_password.rdb_admin_password[0].result
+  rdb_password       = var.rdb_username != "" ? var.rdb_password : random_password.rdb_password[0].result
 }
 
 resource "scaleway_rdb_instance" "main" {
@@ -60,7 +82,7 @@ data "http" "icanhazip" {
 resource "scaleway_rdb_acl" "main" {
   count = var.rdb_enabled && var.define_rdb_acl ? 1 : 0
 
-  instance_id = scaleway_rdb_instance.main.id
+  instance_id = scaleway_rdb_instance.main[0].id
 
   dynamic "acl_rules" {
     for_each = [
@@ -91,23 +113,24 @@ resource "scaleway_rdb_acl" "main" {
 resource "scaleway_rdb_database" "dagster" {
   count = var.rdb_enabled ? 1 : 0
 
-  instance_id = scaleway_rdb_instance.main.id
+  instance_id = scaleway_rdb_instance.main[0].id
   name        = var.rdb_dbname
 }
 
 resource "scaleway_rdb_user" "dagster" {
   count = var.rdb_enabled ? 1 : 0
 
-  instance_id = scaleway_rdb_instance.main.id
+  instance_id = scaleway_rdb_instance.main[0].id
   name        = var.rdb_username
-  password    = local.db_password
+  password    = local.rdb_password
 }
 
-
 resource "scaleway_rdb_privilege" "main" {
-  instance_id   = scaleway_rdb_instance.main.id
-  user_name     = scaleway_rdb_user.main.name
-  database_name = scaleway_rdb_database.main.name
+  count = var.rdb_enabled ? 1 : 0
+
+  instance_id   = scaleway_rdb_instance.main[0].id
+  user_name     = scaleway_rdb_user.dagster[0].name
+  database_name = scaleway_rdb_database.dagster[0].name
 
   # Need to be fairly permissive for Dagster to bootstrap
   # the database
@@ -115,9 +138,9 @@ resource "scaleway_rdb_privilege" "main" {
 }
 
 locals {
-  rdb_endpoint = var.rdb_enabled ? scaleway_rdb_instance.main.load_balancer[0] : null
+  rdb_endpoint = var.rdb_enabled ? scaleway_rdb_instance.main[0].load_balancer[0] : null
 
-  db_conn_string = var.rdb_enabled ? "postgres://${scaleway_rdb_user.dagster.name}:${scaleway_rdb_user.dagster.password}@${local.db_endpoint.ip}:${local.db_endpoint.port}/${var.rdb_dbname}" : var.external_db_connection_string
+  db_conn_string = var.rdb_enabled ? "postgres://${scaleway_rdb_user.dagster[0].name}:${scaleway_rdb_user.dagster[0].password}@${local.rdb_endpoint.ip}:${local.rdb_endpoint.port}/${var.rdb_dbname}" : var.external_db_connection_string
 }
 
 ################################################################################
@@ -132,3 +155,30 @@ resource "scaleway_container_namespace" "main" {
     },
   var.extra_job_environment_variables)
 }
+
+provider "docker" {
+  host = "unix:///var/run/docker.sock"
+
+  registry_auth {
+    address  = scaleway_container_namespace.main.registry_endpoint
+    username = "nologin"
+    password = scaleway_iam_api_key.registry_push.secret_key
+  }
+}
+
+locals {
+  docker_dir = "${path.module}/../docker"
+}
+
+resource "docker_image" "webserver" {
+  name = "${scaleway_container_namespace.main.registry_endpoint}/webserver:latest"
+  build {
+    context    = local.docker_dir
+    dockerfile = "${local.docker_dir}/webserver.Dockerfile"
+  }
+
+  provisioner "local-exec" {
+    command = "docker push ${docker_image.webserver.name}"
+  }
+}
+

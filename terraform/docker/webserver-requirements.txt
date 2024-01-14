@@ -1,0 +1,3 @@
+-r requirements.txt
+
+dagit~=1.6.0
