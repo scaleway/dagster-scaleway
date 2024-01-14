@@ -209,7 +209,7 @@ locals {
 
   dagster_config = templatefile("${path.module}/templates/dagster.yaml.tpl",
     {
-      docker_image   = "changeme",
+      docker_image   = docker_image.code.name,
       extra_env_vars = var.extra_environment_variables,
   })
 
