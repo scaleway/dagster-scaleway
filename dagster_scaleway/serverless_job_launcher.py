@@ -147,7 +147,7 @@ class ScalewayServerlessJobRunLauncher(RunLauncher, ConfigurableClass):
                 continue
 
             job_def = api.update_job_definition(
-                id=job_def.id,
+                job_definition_id=job_def.id,
                 name=job_def_name,
                 image_uri=docker_image,
                 environment_variables=job_def_env,
@@ -195,7 +195,7 @@ class ScalewayServerlessJobRunLauncher(RunLauncher, ConfigurableClass):
             client, run, docker_image, command
         )
 
-        job_run = api.start_job_definition(id=job_def.id)
+        job_run = api.start_job_definition(job_definition_id=job_def.id)
 
         self._instance.report_engine_event(
             message=f"Started job definition {job_def.name} with run id {job_run.id} for Dagster run {run.run_id}",
@@ -257,7 +257,7 @@ class ScalewayServerlessJobRunLauncher(RunLauncher, ConfigurableClass):
         api = scw.JobsV1Alpha1API(client)
 
         try:
-            return api.get_job_run(id=job_run_id)
+            return api.get_job_run(job_run_id=job_run_id)
         except scaleway.ScalewayException:
             return None
 
@@ -291,7 +291,7 @@ class ScalewayServerlessJobRunLauncher(RunLauncher, ConfigurableClass):
         client = self._get_client(serverless_job_context)
         api = scw.JobsV1Alpha1API(client)
 
-        api.stop_job_run(id=job_run.id)
+        api.stop_job_run(job_run_id=job_run.id)
 
         return True
 
