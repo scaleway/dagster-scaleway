@@ -142,8 +142,8 @@ class ScalewayServerlessJobRunLauncher(RunLauncher, ConfigurableClass):
         )
         job_def_name = self._get_semantic_job_name(run)
 
-        for job_def in api.list_job_definitions(page=1, page_size=100).job_definitions:
-            if job_def.name != run.job_name:
+        for job_def in api.list_job_definitions_all():
+            if job_def.name != job_def_name:
                 continue
 
             job_def = api.update_job_definition(
