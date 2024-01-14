@@ -1,5 +1,8 @@
+---
 name: Set up poetry
+
 description: Install poetry and python dependencies
+
 inputs:
   groups:
     description: "Poetry dependencies groups."
@@ -7,6 +10,7 @@ inputs:
   python-version:
     description: "Python version."
     required: true
+
 runs:
   using: "composite"
   steps:
