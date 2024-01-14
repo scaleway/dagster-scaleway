@@ -265,6 +265,7 @@ resource "scaleway_container" "code" {
   cpu_limit    = 1000 // 1 vCPU
   memory_limit = 512  // 512 MB
   min_scale    = 0
+  max_scale    = 1
 
   privacy  = "public"
   protocol = "h2c" // HTTP/2 cleartext for GRPC
@@ -312,6 +313,7 @@ resource "scaleway_container" "webserver" {
   cpu_limit    = 1000 // 1 vCPU
   memory_limit = 1024 // 1 GB
   min_scale    = 1
+  max_scale    = 1
 
   privacy = var.use_private_container_for_webserver ? "private" : "public"
 }
@@ -348,6 +350,7 @@ resource "scaleway_container" "daemon" {
   cpu_limit    = 1000 // 1 vCPU
   memory_limit = 512  // 512 MB
   min_scale    = 1    // Daemon should always be running
+  max_scale    = 1
 
   privacy = "private"
 

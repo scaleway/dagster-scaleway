@@ -14,8 +14,8 @@ run_launcher:
     docker_image: ${docker_image}
     env_vars:
       - PG_DB_CONN_STRING
-%{ for env_var_key, _ in extra_env_vars ~}
-      - ${env_var_key}
+%{ for env_var_key, env_var_value in extra_env_vars ~}
+      - ${env_var_key}=${env_var_value}
 %{ endfor ~}
 
 storage:
