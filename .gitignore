@@ -1,6 +1,6 @@
 # Terraform
 .terraform/
-.tfstate
+*.tfstate*
 
 # Ruff cache
 .ruff_cache/

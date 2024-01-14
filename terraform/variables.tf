@@ -24,7 +24,7 @@ variable "dagster_version" {
   default     = "0.12.11"
 }
 
-variable "extra_job_environment_variables" {
+variable "extra_environment_variables" {
   description = <<EOT
 A map of environment variables to be added to the Serverless Jobs created by Dagster.
 
@@ -54,25 +54,18 @@ variable "define_rdb_acl" {
 # Code location
 ################################################################################
 
-variable "local_python_module_path" {
-  description = <<EOT
-Path to the local python package to be used as a repository.
-
-If chosen, a Serverless Container will be deployed with the package installed. This container
-will run 
-
-See: https://docs.dagster.io/concepts/code-locations/workspace-files#running-your-own-grpc-server
-EOT
-
-  type    = string
-  default = ""
-}
+# Via a single Python file and its dependencies
 
 variable "local_python_file_path" {
   description = "Path to the local python file to be used as a repository."
 
   type    = string
   default = ""
+}
+
+variable "local_python_file_extra_requirements" {
+  type    = list(string)
+  default = []
 }
 
 ################################################################################
@@ -106,7 +99,7 @@ variable "rdb_node_type" {
 variable "rdb_postgres_version" {
   description = "The version of postgres to be used for the relational database"
   type        = string
-  default     = "PostgreSQL-12"
+  default     = "PostgreSQL-15"
 }
 
 variable "rdb_is_ha_cluster" {
@@ -124,7 +117,7 @@ variable "rdb_disable_backup" {
 variable "rdb_admin_username" {
   description = "The username to be used for the admin user of the relational database"
   type        = string
-  default     = "postgres"
+  default     = "admin"
 }
 
 variable "rdb_admin_password" {

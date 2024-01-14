@@ -5,10 +5,11 @@ ENV DAGSTER_HOME=/app
 WORKDIR ${DAGSTER_HOME}
 
 # Install dependencies
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+COPY base-requirements.txt webserver-requirements.txt ./
+RUN pip install --no-cache-dir -r webserver-requirements.txt
 
-ARG DAGSTER_CONFIG_FILE=dagster.yaml
-COPY ${DAGSTER_CONFIG_FILE} ./dagster.yaml
+# Copy over the rest of the files
+COPY dagster.yaml ./
+COPY workspace.yaml ./
 
 CMD [ "dagster-webserver", "-h", "0.0.0.0", "-p", "8080" ]
