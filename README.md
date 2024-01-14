@@ -16,9 +16,9 @@ echo<<EOF > Dockerfile
 FROM python:3.12-slim-bookworm
 WORKDIR /app
 COPY . .
-pip install .
-# You can also specify it in the "setup.py" file
-pip install dagster-scaleway
+RUN pip install .
+# Install the Dagster Scaleway module. You can also specify it in your "setup.py" file
+RUN pip install dagster_scaleway
 EOF
 ```
 
