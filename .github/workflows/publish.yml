@@ -2,10 +2,13 @@
 name: publish
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]"
 
 permissions:
+  # This permission is required for trusted publishing.
+  id-token: write
   contents: read
 
 jobs:
@@ -18,16 +21,25 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Set up Poetry
         uses: ./.github/actions/setup-poetry
         with:
-          groups: ''  # will only install the main group
-          python-version: '3.11'
+          groups: "" # will only install the main group
+          python-version: "3.11"
 
-      - name: Publish package
-        run: poetry publish --build
-        env:
-          POETRY_HTTP_BASIC_PYPI_USERNAME: __token__
-          POETRY_HTTP_BASIC_PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Update version (kept at 0.0.0) in pyproject.toml and build
+        run: |
+          # Remove v prefix from tag
+          export VERSION=(echo ${{ github.ref_name}} | sed 's/^v//')
+          poetry version $VERSION
+          poetry build
+
+      - name: Mint token
+        id: mint
+        uses: tschm/token-mint-action@v1.0.2
+
+      - name: Publish the package with poetry
+        run: |
+          poetry publish -u __token__ -p '${{ steps.mint.outputs.api-token }}'
