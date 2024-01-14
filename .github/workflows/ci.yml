@@ -1,0 +1,39 @@
+---
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up python 3.11
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Set up Poetry
+        uses: ./.github/actions/setup-poetry
+        with:
+          groups: dev
+          python-version: 3.11
+
+      - name: Run Ruff
+        run: |
+          poetry run ruff check . --fix
+          poetry run ruff format . --check
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore(ci): run ruff"

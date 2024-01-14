@@ -191,7 +191,9 @@ class ScalewayServerlessJobRunLauncher(RunLauncher, ConfigurableClass):
         client = self._get_client(serverless_job_context)
         api = scw.JobsV1Alpha1API(client)
 
-        job_def = self._create_or_update_job_definition(client, run, docker_image, command)
+        job_def = self._create_or_update_job_definition(
+            client, run, docker_image, command
+        )
 
         job_run = api.start_job_definition(id=job_def.id)
 
