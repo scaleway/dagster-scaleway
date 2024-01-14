@@ -32,7 +32,7 @@ jobs:
       - name: Update version (kept at 0.0.0) in pyproject.toml and build
         run: |
           # Remove v prefix from tag
-          export VERSION=(echo ${{ github.ref_name}} | sed 's/^v//')
+          export VERSION=$(echo ${{ github.ref_name}} | sed 's/^v//')
           poetry version $VERSION
           poetry build
 
