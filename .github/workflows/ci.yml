@@ -25,7 +25,7 @@ jobs:
       - name: Set up Poetry
         uses: ./.github/actions/setup-poetry
         with:
-          groups: main, dev
+          groups: "main,dev"
           python-version: 3.11
 
       - name: Run Ruff
