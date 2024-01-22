@@ -16,6 +16,7 @@ cat <<EOF > Dockerfile
 FROM python:3.12-slim-bookworm
 WORKDIR /app
 COPY . .
+RUN pip install pendulum==2.0.3
 RUN pip install .
 # Install the Dagster Scaleway module. You can also specify it in your "setup.py" file
 RUN pip install dagster_scaleway
