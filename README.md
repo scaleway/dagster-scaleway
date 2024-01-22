@@ -12,7 +12,7 @@ Build a docker image containing your Dagster code and push it to the Scaleway Re
 dagster project scaffold --name my-dagster-project
 cd my-dagster-project
 
-echo<<EOF > Dockerfile
+cat <<EOF > Dockerfile
 FROM python:3.12-slim-bookworm
 WORKDIR /app
 COPY . .
