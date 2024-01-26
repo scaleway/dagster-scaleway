@@ -12,10 +12,11 @@ Build a docker image containing your Dagster code and push it to the Scaleway Re
 dagster project scaffold --name my-dagster-project
 cd my-dagster-project
 
-echo<<EOF > Dockerfile
+cat <<EOF > Dockerfile
 FROM python:3.12-slim-bookworm
 WORKDIR /app
 COPY . .
+RUN pip install pendulum==2.0.3
 RUN pip install .
 # Install the Dagster Scaleway module. You can also specify it in your "setup.py" file
 RUN pip install dagster_scaleway
